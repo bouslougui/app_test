@@ -4,3 +4,4 @@ Werkzeug
 wrapt
 azure
 azureml
+azureml.core
