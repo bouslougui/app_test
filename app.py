@@ -16,11 +16,11 @@ credential = ServicePrincipalCredentials(tenant=tenant_id, client_id=client_id, 
 subscription_client = SubscriptionClient(credential)
 
 subscription = next(subscription_client.subscriptions.list())
-print(subscription.subscription_id)
+
 
 @app.route("/")
 def hello():
-    return "Welcome to machine learning model APIs!"+subscription.subscription_id
+    return "Welcome to machine learning model APIs!"
 
 
 if __name__ == '__main__':
