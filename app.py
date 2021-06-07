@@ -1,11 +1,12 @@
 from flask import Flask
 import os
-from azure.mgmt.resource import SubscriptionClient
 from azure.common.credentials import ServicePrincipalCredentials
+from skimage import io
 
 from azureml.core.authentication import ServicePrincipalAuthentication
+from azure.storage.blob import BlobServiceClient
 
-from azureml.core import Workspace
+from azureml.core import Workspace,Datastore,Dataset
 
 
 app = Flask(__name__)
@@ -15,11 +16,7 @@ tenant_id = "e6311692-39bf-4a2b-95d1-2636e4e409c7"
 client_id = "80b5eb4f-f73f-45ee-8e68-47de95d57340"
 client_secret = "DPG~sW85RX8Loh8L4-zc-RCH8GyJq-x5t3"
 
-credential = ServicePrincipalCredentials(tenant=tenant_id, client_id=client_id, secret=client_secret)
 
-subscription_client = SubscriptionClient(credential)
-
-subscription = next(subscription_client.subscriptions.list())
 svc_pr = ServicePrincipalAuthentication(
     tenant_id=tenant_id,
     service_principal_id=client_id,
@@ -31,10 +28,18 @@ ws = Workspace(
     workspace_name="P8_OCR",
     auth=svc_pr
     )
-
+key = '0uNVwtpOKmtEtX4CfylBWk2MsNMN5EOykwisoeIBwyUWKEwv' 
+dataset = Dataset.get_by_name(ws, name='cityscapes')
+blob_service_client = BlobServiceClient(
+        account_url="https://p8ocr7871470186.blob.core.windows.net",
+        account_key=key
+    )
+container = blob_service_client.get_container_client('p8contener')
+blob_list = container.list_blobs()
+image = io.imread("https://p8ocr7871470186.blob.core.windows.net/p8contener/06932.jpg")
 @app.route("/")
 def hello():
-    return "Welcome to machine learning model APIs!"+ws.location
+    return image
 
 
 if __name__ == '__main__':
