@@ -1,7 +1,8 @@
 from flask import Flask
+from skimage import io
 import os
 from azure.common.credentials import ServicePrincipalCredentials
-from skimage import io
+
 
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azure.storage.blob import BlobServiceClient

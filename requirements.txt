@@ -5,5 +5,4 @@ wrapt
 azure
 azureml
 azureml.core
-skimage
 azure.storage
