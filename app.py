@@ -2,7 +2,8 @@ from flask import Flask
 from skimage import io
 import os
 from azure.common.credentials import ServicePrincipalCredentials
-
+from azureml.core.model import Model
+   
 
 from azureml.core.authentication import ServicePrincipalAuthentication
 from azure.storage.blob import BlobServiceClient
@@ -29,15 +30,16 @@ ws = Workspace(
     workspace_name="P8_OCR",
     auth=svc_pr
     )
-key = '0uNVwtpOKmtEtX4CfylBWk2MsNMN5EOykwisoeIBwyUWKEwv' 
-dataset = Dataset.get_by_name(ws, name='cityscapes')
-blob_service_client = BlobServiceClient(
-        account_url="https://p8ocr7871470186.blob.core.windows.net",
-        account_key=key
-    )
-container = blob_service_client.get_container_client('p8contener')
-blob_list = container.list_blobs()
-image = io.imread("https://p8ocr7871470186.blob.core.windows.net/p8contener/06932.jpg")
+
+model = Model(ws, 'ocr_p8_voiture_v1')
+
+model.download(target_dir=os.getcwd(), exist_ok=True)
+
+# verify the downloaded model file
+file_path = os.path.join(os.getcwd(), "fwrk.pkl")
+
+os.stat(file_path)
+
 @app.route("/")
 def hello():
     return image
